@@ -1,0 +1,26 @@
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+apply from: file('cradle/base.gradle')
+
+dependencies {
+    // JSON (de)serialization stuff
+    compile group:'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4+'
+    compile group:'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4+'
+    compile group:'com.fasterxml.jackson.dataformat', name:'jackson-dataformat-smile', version:'2.4+'
+    compile group:'com.fasterxml.jackson.dataformat', name:'jackson-dataformat-yaml', version:'2.4+'
+    compile group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-guava', version:'2.4+'
+    compile group:'com.fasterxml.jackson.datatype', name:'jackson-datatype-joda', version:'2.4+'
+    // XML support for Jackson, Woodstox replaces native Stax implementation in JDK to offer better performance
+    compile group:'com.fasterxml.jackson.dataformat', name:'jackson-dataformat-xml', version:'2.4+'
+    compile group:'org.codehaus.woodstox', name:'woodstox-core-asl', version:'4.1.4'
+    // for injecting the ObjectMappers to main factory object
+    compile group:'com.google.inject.extensions', name:'guice-multibindings', version:'3.+'
+}
