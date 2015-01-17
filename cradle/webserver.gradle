@@ -1,0 +1,4 @@
+dependencies {
+    // Actual web server
+    compile group:'io.undertow', name:'undertow-core', version:'1.1.1.Final'
+}

@@ -1,0 +1,15 @@
+dependencies {
+    // PostgreSQL + simplified JDBC integration
+    compile group:'org.springframework', name:'spring-jdbc', version:'3.2.5.RELEASE'
+    compile group:'org.postgresql', name:'postgresql', version:'9.3-1100-jdbc41'
+}
+// enable Gradle-Flyway integration, eg. running migration scripts using Gradle
+// TODO: This buildscript stuff should most likely be elsewhere
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group:'org.flywaydb', name:'flyway-gradle-plugin', version:'3.1'
+    }
+}
