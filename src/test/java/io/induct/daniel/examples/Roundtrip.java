@@ -1,0 +1,51 @@
+package io.induct.daniel.examples;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.net.MediaType;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import io.induct.daniel.Daniel;
+import io.induct.daniel.DanielModule;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+/**
+ * Example of simple roundtrip usage.
+ */
+public class Roundtrip {
+
+    public static void main(String[] args) {
+        // 1. Create your Guice injector as you normally would
+        Injector injector = Guice.createInjector(new DanielModule());
+
+        // 2. get Daniel instance
+        Daniel daniel = injector.getInstance(Daniel.class);
+
+        // 3. take serialized input and deserialize it to object
+        InputStream stream = new ByteArrayInputStream("{\"greeting\":\"hello world\"}".getBytes());
+        Greeting greeting = daniel.deserialize(MediaType.JSON_UTF_8, Greeting.class, stream);
+        // this will print 'hello world'
+        System.out.println(greeting.getGreeting());
+
+        // 4. deserialize object back to another supported format
+        byte[] reserialized = daniel.serialize(MediaType.APPLICATION_XML_UTF_8, greeting);
+        // note how plain lists are serialized with
+        assert new String(reserialized).equals("<greeting>hello world</greeting>");
+    }
+
+    public static class Greeting {
+
+        private final String greeting;
+
+        @JsonCreator
+        public Greeting(@JsonProperty("greeting") String greeting) {
+            this.greeting = greeting;
+        }
+
+        public String getGreeting() {
+            return greeting;
+        }
+    }
+}
