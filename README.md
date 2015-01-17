@@ -1,5 +1,8 @@
-# Cradle - a Gradle project template
+# Daniel
 
-Base template to use for Gradle projects. Sort of similar to eg. Netflix' [gradle-template](https://github.com/Netflix/gradle-template), only more lightweight and suited to my personal needs.
+Daniel is a [Jackson](https://github.com/FasterXML/jackson-core) serialization helper meant to be used in Web context.
+With Daniel adding support for JSON, Smile, XML, YAML input and outputs is very straightforward which allows the
+developer to focus on the meat of the project.
 
-The master branch will never contain anything useful. Look for versioned branches for actual content.
+All (de)serialization is controlled by [Jackson Annotations](https://github.com/FasterXML/jackson-annotations).
+If performance is of concern, considering including [Jackson Afterburner](https://github.com/FasterXML/jackson-module-afterburner)
