@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class DanielModule extends AbstractModule {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DanielModule.class);
+    private final Logger log = LoggerFactory.getLogger(DanielModule.class);
 
     @Override
     protected void configure() {
@@ -44,7 +44,7 @@ public class DanielModule extends AbstractModule {
         jacksonModules.addBinding().toInstance(new GuavaModule());
         jacksonModules.addBinding().toInstance(new JodaModule());
 
-        LOG.info("Daniel (de)serialization helper binding complete");
+        log.info("Daniel (de)serialization helper binding complete");
     }
 
     @Provides
