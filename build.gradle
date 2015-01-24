@@ -8,9 +8,11 @@ repositories {
     mavenCentral()
 }
 
-apply from: file('cradle/base.gradle')
+apply from: file('cradle/library.gradle')
 
 dependencies {
+    // this library provides a Guice module
+    compile group:'com.google.inject', name:'guice', version:'3.+'
     // JSON (de)serialization stuff
     compile group:'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4+'
     compile group:'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4+'

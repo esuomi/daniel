@@ -1,0 +1,7 @@
+dependencies {
+    // DI/IoC is a sane thing to do; we like Guice as our flavor
+    compile group:'com.google.inject', name:'guice', version:'3.+'
+	
+	// Logback is our selection for production logging
+    compile group:'ch.qos.logback', name:'logback-classic', version:'1.0.13'
+}

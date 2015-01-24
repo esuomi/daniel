@@ -1,10 +1,6 @@
 dependencies {
-    // DI/IoC is a sane thing to do; we like Guice as our flavor
-    compile group:'com.google.inject', name:'guice', version:'3.+'
-
-    // slf4j + logback for logging
+    // slf4j
     compile group:'org.slf4j', name:'slf4j-api', version:'1.7.9'
-    compile group:'ch.qos.logback', name:'logback-classic', version:'1.0.13'
 
     // better collections and other assorted utils
     compile group: 'com.google.guava', name:'guava', version:'18.0+'
