@@ -1,0 +1,6 @@
+apply from: file('cradle/base.gradle')
+
+dependencies {
+    // logback for logging during testing
+    testCompile group:'ch.qos.logback', name:'logback-classic', version:'1.0.13'
+}
