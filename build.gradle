@@ -2,13 +2,15 @@ apply plugin: 'java'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
+
+group = 'io.induct'
 version = '0.1.0'
 
 repositories {
     mavenCentral()
 }
 
-apply from: file('cradle/library.gradle')
+apply from: file("${rootProject.projectDir}/cradle/library.gradle")
 
 dependencies {
     // this library provides a Guice module
