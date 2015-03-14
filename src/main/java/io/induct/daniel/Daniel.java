@@ -4,15 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.smile.SmileFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.google.common.base.Preconditions;
 import com.google.common.net.MediaType;
 
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -23,10 +20,22 @@ public class Daniel {
 
     private final Map<MediaType, ObjectMapper> objectMappers;
 
+    private final MediaType defaultMediaType;
+
     public Daniel(Map<MediaType, ObjectMapper> objectMappers, Set<Module> modules) {
+        Preconditions.checkArgument(!objectMappers.isEmpty(), "Daniel cannot be instantiated without ObjectMappers");
+
+        MediaType defaultMediaType = null;
+        boolean first = true;
         for (Map.Entry<MediaType, ObjectMapper> objectMapper : objectMappers.entrySet()) {
+            if (first) {
+                defaultMediaType = objectMapper.getKey();
+                first = false;
+            }
             configureMapper(modules, objectMapper.getValue());
         }
+
+        this.defaultMediaType = defaultMediaType;
         this.objectMappers = objectMappers;
     }
 
@@ -41,6 +50,10 @@ public class Daniel {
         return mapper;
     }
 
+    public <T> T deserialize(Class<T> aClass, InputStream inputStream) {
+        return deserialize(defaultMediaType, aClass, inputStream);
+    }
+
     public <T> T deserialize(MediaType mediaType, Class<T> aClass, InputStream inputStream) {
         ObjectMapper mapper = selectMapper(mediaType);
         try {
@@ -48,6 +61,10 @@ public class Daniel {
         } catch (IOException e) {
             throw new DeserializationException("Failed to deserialize stream to target class " + aClass, e);
         }
+    }
+
+    public <T> List<T> deserializeAll(TypeReference<List<T>> typeReference, InputStream stream) throws DeserializationException {
+        return deserializeAll(defaultMediaType, typeReference, stream);
     }
 
     public <T> List<T> deserializeAll(MediaType mediaType, TypeReference<List<T>> typeReference, InputStream stream) throws DeserializationException {
@@ -61,15 +78,38 @@ public class Daniel {
         }
     }
 
+    public  <T> byte[] serialize(T object) throws SerializationException {
+        return serialize(defaultMediaType, object);
+    }
+
+    public  <T> byte[] serialize(T object, boolean prettyPrint) throws SerializationException {
+        return serialize(defaultMediaType, object, prettyPrint);
+    }
+
     public  <T> byte[] serialize(MediaType mediaType, T object) throws SerializationException {
+        return serialize(mediaType, object, false);
+    }
+
+    public  <T> byte[] serialize(MediaType mediaType, T object, boolean prettyPrint) throws SerializationException {
         if (object == null) {
             throw new SerializationException(mediaType, "Cannot serialize null instance");
         }
         try {
-            return selectMapper(mediaType).writeValueAsBytes(object);
+            ObjectMapper mapper = selectMapper(mediaType);
+            ObjectWriter writer;
+            if (prettyPrint) {
+                writer = mapper.writerWithDefaultPrettyPrinter();
+            } else {
+                writer = mapper.writer();
+            }
+            return writer.writeValueAsBytes(object);
         } catch (Exception e) {
             throw new SerializationException(mediaType, "Failed to serialize event", e);
         }
+    }
+
+    public byte[] serializeAll(List<?> objects) throws SerializationException {
+        return serializeAll(defaultMediaType, objects);
     }
 
     public byte[] serializeAll(MediaType mediaType, List<?> objects) throws SerializationException {

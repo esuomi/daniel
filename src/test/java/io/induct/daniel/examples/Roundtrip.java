@@ -1,7 +1,5 @@
 package io.induct.daniel.examples;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.net.MediaType;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -42,17 +40,4 @@ public class Roundtrip {
         assert new String(reserialized).equals("<greeting>hello world</greeting>");
     }
 
-    public static class Greeting {
-
-        private final String greeting;
-
-        @JsonCreator
-        public Greeting(@JsonProperty("greeting") String greeting) {
-            this.greeting = greeting;
-        }
-
-        public String getGreeting() {
-            return greeting;
-        }
-    }
 }
