@@ -1,3 +1,9 @@
+apply plugin: 'maven' // allow running 'gradle install' with similar results as what 'mvn install' would yield
+
+repositories {
+    mavenLocal()
+}
+
 dependencies {
     // slf4j
     compile group:'org.slf4j', name:'slf4j-api', version:'1.7.9'

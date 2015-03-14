@@ -1,4 +1,4 @@
-apply from: file('cradle/base.gradle')
+apply from: file("${rootProject.projectDir}/base.gradle")
 
 dependencies {
     // logback for logging during testing
