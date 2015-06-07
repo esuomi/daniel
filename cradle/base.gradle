@@ -1,4 +1,5 @@
-apply plugin: 'maven' // allow running 'gradle install' with similar results as what 'mvn install' would yield
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 repositories {
     mavenLocal()
@@ -13,12 +14,74 @@ dependencies {
 
     // these are the EXACT dependencies one has to use when using the JUnit+Mockito combo to avoid Hamcrest
     // compilation/runtime problems
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.8'
-    testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
-    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.+'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
 }
 
 compileJava {
     options.encoding = "UTF-8"
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name "${title}"
+                artifactId "${Project.name}"
+                packaging 'jar'
+                description "${description}"
+                url 'http://induct.io'
+
+                scm {
+                    connection "scm:git:git://github.com/esuomi/${Project.name}.git"
+                    developerConnection "scm:git:git@github.com:esuomi/${Project.name}.git"
+                    url "https://github.com/esuomi/${Project.name}"
+                }
+
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'http://www.opensource.org/licenses/mit-license.php'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'esuomi'
+                        name 'Esko Suomi'
+                        email 'suomi.esko@gmail.com'
+                    }
+                }
+            }
+        }
+    }
 }
