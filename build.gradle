@@ -11,6 +11,7 @@ repositories {
 }
 
 apply from: file("${rootProject.projectDir}/cradle/library.gradle")
+apply from: file("${rootProject.projectDir}/cradle/publishing.gradle")
 
 dependencies {
     // this library provides a Guice module

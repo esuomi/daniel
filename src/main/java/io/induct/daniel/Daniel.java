@@ -50,6 +50,19 @@ public class Daniel {
         return mapper;
     }
 
+    public <T> T deserialize(TypeReference<T> type, InputStream inputStream) {
+        return deserialize(defaultMediaType, type, inputStream);
+    }
+
+    public <T> T deserialize(MediaType mediaType, TypeReference<T> type, InputStream inputStream) {
+        ObjectMapper mapper = selectMapper(mediaType);
+        try {
+            return mapper.readValue(inputStream, type);
+        } catch (IOException e) {
+            throw new DeserializationException("Failed to deserialize stream to target type " + type, e);
+        }
+    }
+
     public <T> T deserialize(Class<T> aClass, InputStream inputStream) {
         return deserialize(defaultMediaType, aClass, inputStream);
     }
