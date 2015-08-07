@@ -1,22 +1,8 @@
-# Cradle - a Gradle project template
+# Daniel
 
-Base template to use for Gradle projects. Sort of similar to eg. Netflix' [gradle-template](https://github.com/Netflix/gradle-template), only more lightweight and suited to my personal needs.
+Daniel is a [Jackson](https://github.com/FasterXML/jackson-core) serialization helper meant to be used in Web context.
+With Daniel adding support for JSON, Smile, XML, YAML input and outputs is very straightforward which allows the
+developer to focus on the meat of the project.
 
-## Starting a new project
-
-First, create a Git repository as Cradle fork locally
-```bash
-git init project-name
-cd project-name
-git remote add cradle https://github.com/esuomi/Cradle.git
-```
-
-Second, init repository at GitHub like you normally would, add it as remote to `project-name` and merge the contents:
-```bash
-git remote add origin git@github.com:esuomi/http.git
-git fetch --all
-git checkout cradle/master
-git push -u origin master
-```
-
-After this you can start adding the actual project files. Easiest place to start is the missing `build.gradle` and `gradle.properties`
+All (de)serialization is controlled by [Jackson Annotations](https://github.com/FasterXML/jackson-annotations).
+If performance is of concern, considering including [Jackson Afterburner](https://github.com/FasterXML/jackson-module-afterburner)
