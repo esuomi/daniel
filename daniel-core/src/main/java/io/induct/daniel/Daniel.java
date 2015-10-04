@@ -12,7 +12,6 @@ import com.google.common.net.MediaType;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -76,21 +75,6 @@ public class Daniel {
         }
     }
 
-    public <T> List<T> deserializeAll(TypeReference<List<T>> typeReference, InputStream stream) throws DeserializationException {
-        return deserializeAll(defaultMediaType, typeReference, stream);
-    }
-
-    public <T> List<T> deserializeAll(MediaType mediaType, TypeReference<List<T>> typeReference, InputStream stream) throws DeserializationException {
-        if (typeReference == null) {
-            throw new DeserializationException("Cannot deserialize events without a valid TypeReference instance, given TypeReference is null");
-        }
-        try {
-            return selectMapper(mediaType).readValue(stream, typeReference);
-        } catch (Exception e) {
-            throw new DeserializationException("Failed to deserialize stream to target type " + typeReference.getType(), e);
-        }
-    }
-
     public  <T> byte[] serialize(T object) throws SerializationException {
         return serialize(defaultMediaType, object);
     }
@@ -118,21 +102,6 @@ public class Daniel {
             return writer.writeValueAsBytes(object);
         } catch (Exception e) {
             throw new SerializationException(mediaType, "Failed to serialize event", e);
-        }
-    }
-
-    public byte[] serializeAll(List<?> objects) throws SerializationException {
-        return serializeAll(defaultMediaType, objects);
-    }
-
-    public byte[] serializeAll(MediaType mediaType, List<?> objects) throws SerializationException {
-        if (objects == null) {
-            throw new SerializationException(mediaType, "Cannot serialize null list");
-        }
-        try {
-            return selectMapper(mediaType).writeValueAsBytes(objects);
-        } catch (Exception e) {
-            throw new SerializationException(mediaType, "Failed to serialize " + objects.size() + " events", e);
         }
     }
 
