@@ -1,4 +1,4 @@
-package io.induct.daniel;
+package io.induct.daniel.ioc.guice;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +12,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.multibindings.Multibinder;
+import io.induct.daniel.Daniel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
