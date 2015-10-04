@@ -1,0 +1,4 @@
+dependencies {
+    // for injecting the ObjectMappers to main factory object
+    compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.0'
+}
