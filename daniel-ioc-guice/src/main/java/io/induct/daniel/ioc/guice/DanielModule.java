@@ -2,11 +2,17 @@ package io.induct.daniel.ioc.guice;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -29,21 +35,26 @@ public class DanielModule extends AbstractModule {
 
         MapBinder<MediaType, ObjectMapper> objectMappers = MapBinder.newMapBinder(binder(), MediaType.class, ObjectMapper.class);
 
-        objectMappers.addBinding(MediaType.JSON_UTF_8)
-                .toInstance(new ObjectMapper());
+        ImmutableMap.of(
+                MediaType.JSON_UTF_8, new ObjectMapper(),
+                MediaType.create("application", "x-jackson-smile"), new ObjectMapper(new SmileFactory()),
+                MediaType.create("application", "yaml"), new ObjectMapper(new YAMLFactory()),
+                MediaType.APPLICATION_XML_UTF_8, new XmlMapper(),
+                MediaType.create("application", "cbor"), new ObjectMapper(new CBORFactory())
+        ).forEach((key, value) ->
+                objectMappers.addBinding(key).toInstance(value)
+        );
 
-        objectMappers.addBinding(MediaType.create("application", "x-jackson-smile"))
-                .toInstance(new ObjectMapper(new SmileFactory()));
-
-        objectMappers.addBinding(MediaType.create("application", "yaml"))
-                .toInstance(new ObjectMapper(new YAMLFactory()));
-
-        objectMappers.addBinding(MediaType.APPLICATION_XML_UTF_8)
-                .toInstance(new XmlMapper());
-
-        Multibinder<Module> jacksonModules = Multibinder.newSetBinder(binder(), Module.class);
-        jacksonModules.addBinding().toInstance(new GuavaModule());
-        jacksonModules.addBinding().toInstance(new JodaModule());
+        Lists.newArrayList(
+                new GuavaModule(),
+                new JodaModule(),
+                new AfterburnerModule(),
+                new Jdk7Module(),
+                new Jdk8Module()
+        ).stream().collect(
+                () -> Multibinder.newSetBinder(binder(), Module.class),
+                (modules, module) -> modules.addBinding().toInstance(module),
+                (__ignoredOnPurpose__, __doNotParallelizeThis__) -> {});
 
         log.info("Daniel (de)serialization helper binding complete");
     }
