@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.base.Preconditions;
 import com.google.common.net.MediaType;
 
@@ -39,10 +38,7 @@ public class Daniel {
     }
 
     private ObjectMapper configureMapper(Set<Module> modules, ObjectMapper mapper) {
-        for (Module module : modules) {
-            mapper.registerModule(module);
-        }
-        mapper.registerModule(new JodaModule());
+        modules.forEach(mapper::registerModule);
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
