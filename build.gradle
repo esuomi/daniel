@@ -1,8 +1,8 @@
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     group = 'io.induct.daniel'
     version = '0.3.0'
@@ -14,17 +14,33 @@ subprojects {
     apply from: file("${rootProject.projectDir}/cradle/library.gradle")
     apply from: file("${rootProject.projectDir}/cradle/publishing.gradle")
 
+
+    ext.deps = [
+        jackson:[version:'2.6+']
+    ]
+
     dependencies {
         // JSON (de)serialization stuff
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.5.4'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.5.4'
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-smile', version: '2.5.4'
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.5.4'
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-guava', version: '2.5.4'
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.5.4'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: deps.jackson.version
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: deps.jackson.version
+
+        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-smile', version: deps.jackson.version
+        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: deps.jackson.version
+        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: deps.jackson.version
+
+        // Jackson baseline is JDK6, so support for newer JDK classes etc. is enabled by having these datatype extensions
+        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk7', version: deps.jackson.version
+        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: deps.jackson.version
+
+        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-guava', version: deps.jackson.version
+        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: deps.jackson.version
         // XML support for Jackson, Woodstox replaces native Stax implementation in JDK to offer better performance
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.5.4'
-        compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.1.4'
+        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: deps.jackson.version
+        compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
+
+        // afterburner uses bytecode generation to improve overall performance by 30-40%
+        compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-afterburner', version: deps.jackson.version
+
     }
 }
 project(':daniel-ioc-guice') {
