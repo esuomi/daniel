@@ -3,7 +3,7 @@ package io.induct.daniel.examples;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.induct.daniel.Daniel;
-import io.induct.daniel.DanielModule;
+import io.induct.daniel.ioc.guice.DanielModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
