@@ -2,5 +2,5 @@ apply from: file("${rootProject.projectDir}/cradle/application.gradle")
 
 dependencies {
     // Actual web server
-    compile group:'io.undertow', name:'undertow-core', version:'1.1.1.Final'
+    compile group:'io.undertow', name:'undertow-core', version:'1.3.11.Final'
 }
