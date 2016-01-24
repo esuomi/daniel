@@ -1,0 +1,32 @@
+/*
+ * Example template for multi module project.
+ */
+// buildscript block cannot be included from external script, see https://discuss.gradle.org/t/how-do-i-include-buildscript-block-from-external-gradle-script/7016/2
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3'
+        classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:3.0.1'
+    }
+}
+// root.gradle has shared configurations for multimodule project roots
+apply from: file("${rootProject.projectDir}/cradle/root.gradle")
+
+// general subproject configuration
+subprojects {
+    // you may want to change base.gradle to either library.gradle or application.gradle depending on what you're working on
+    apply from: file("${rootProject.projectDir}/cradle/base.gradle")
+    apply from: file("${rootProject.projectDir}/cradle/publishing.gradle")
+
+    sourceCompatibility = JavaVersion.VERSION_1.8
+    targetCompatibility = JavaVersion.VERSION_1.8
+    // remember to change group to your own
+    group = 'com.example'
+    // first version should be 0.1.0 as per Semantic Versioning: http://semver.org/
+    version = '0.1.0'
+}
