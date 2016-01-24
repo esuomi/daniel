@@ -1,5 +1,21 @@
+// buildscript block cannot be included from external script, see https://discuss.gradle.org/t/how-do-i-include-buildscript-block-from-external-gradle-script/7016/2
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3'
+        classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:3.0.1'
+    }
+}
+apply from: file("${rootProject.projectDir}/cradle/root.gradle")
+
 subprojects {
-    apply plugin: 'java'
+    apply from: file("${rootProject.projectDir}/cradle/library.gradle")
+    apply from: file("${rootProject.projectDir}/cradle/publishing.gradle")
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -7,44 +23,7 @@ subprojects {
     group = 'io.induct.daniel'
     version = '0.3.0'
 
-    repositories {
-        mavenCentral()
-    }
-
-    apply from: file("${rootProject.projectDir}/cradle/library.gradle")
-    apply from: file("${rootProject.projectDir}/cradle/publishing.gradle")
-
-
     ext.deps = [
         jackson:[version:'2.6.4']
     ]
-
-    dependencies {
-        // JSON (de)serialization stuff
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: deps.jackson.version
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: deps.jackson.version
-
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-smile', version: deps.jackson.version
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: deps.jackson.version
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: deps.jackson.version
-
-        // Jackson baseline is JDK6, so support for newer JDK classes etc. is enabled by having these datatype extensions
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk7', version: deps.jackson.version
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: deps.jackson.version
-
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-guava', version: deps.jackson.version
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: deps.jackson.version
-        // XML support for Jackson, Woodstox replaces native Stax implementation in JDK to offer better performance
-        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: deps.jackson.version
-        compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
-
-        // afterburner uses bytecode generation to improve overall performance by 30-40%
-        compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-afterburner', version: deps.jackson.version
-
-    }
-}
-project(':daniel-ioc-guice') {
-    dependencies {
-        compile project(':daniel-core')
-    }
 }
